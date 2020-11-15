@@ -31,24 +31,22 @@
     </div>
     <transition mode="out-in" name="fade-in">
       <div v-if="showFooter" class="main-footer">
-        <table>
-          <tr>
-            <th>Current timezone</th>
-            <td>Europe/London</td>
-          </tr>
-          <tr>
-            <th>Day of the year</th>
-            <td>295</td>
-          </tr>
-          <tr>
-            <th>Day of the week</th>
-            <td>5</td>
-          </tr>
-          <tr>
-            <th>Week number</th>
-            <td>42</td>
-          </tr>
-        </table>
+        <div class="footer-line">
+          <div class="footer-title">Current timezone</div>
+          <div class="footer-value">Europe/London</div>
+        </div>
+        <div class="footer-line">
+          <div class="footer-title">Day of the year</div>
+          <div class="footer-value">295</div>
+        </div>
+        <div class="footer-line">
+          <div class="footer-title">Day of the week</div>
+          <div class="footer-value">5</div>
+        </div>
+        <div class="footer-line">
+          <div class="footer-title">Week number</div>
+          <div class="footer-value">42</div>
+        </div>
       </div>
     </transition>
   </div>

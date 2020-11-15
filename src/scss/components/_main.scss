@@ -71,24 +71,23 @@
   }
 
   .main-footer {
+    position: absolute;
+    // bottom: 0;
     width: 100%;
     height: 256px;
     padding: 43px 26px 48px;
-    // position: absolute;
-    // bottom: 0;
     margin-top: 40px;
+    color: #303030;
+    text-shadow: none;
     background-image: radial-gradient(ellipse at 60% 60%, #fff 0.1%, #c8c9c9);
     background-repeat: no-repeat;
     background-size: 100%;
+    .footer-line {
+      display: grid;
+      // grid-template-columns: 1fr 1fr;
+      padding-bottom: 14px;
 
-    table {
-      width: 100%;
-      color: #303030;
-      text-shadow: none;
-
-      th {
-        padding-bottom: 14px;
-        // padding: 8px 0;
+      .footer-title {
         font-size: 10px;
         font-weight: 400;
         line-height: 28px;
@@ -96,8 +95,7 @@
         text-transform: uppercase;
         letter-spacing: 2px;
       }
-      td {
-        padding-bottom: 14px;
+      .footer-value {
         font-size: 20px;
         font-weight: 700;
         line-height: 24px;
@@ -109,6 +107,73 @@
   &.main-open {
     .main-body {
       margin-top: 70px;
+    }
+  }
+
+  @include mq($from: tablet) {
+    padding: 80px 0 64px;
+
+    .main-header {
+      padding: 0 131px 0 64px;
+      font-size: 18px;
+      line-height: 28px;
+
+      .quote {
+        .quote-text {
+          margin-bottom: 13px;
+        }
+        .quote-refresh {
+          margin-top: 8px;
+        }
+      }
+    }
+    .main-body {
+      padding: 0 192px 0 64px;
+      margin-top: 390px;
+      .greeting {
+        .greeting-text {
+          font-size: 18px;
+          line-height: 28px;
+          letter-spacing: 3.6px;
+        }
+      }
+      .time {
+        margin-top: 0;
+        .time-display {
+          font-size: 175px;
+          font-weight: 700;
+          line-height: 150px;
+          letter-spacing: -4.375px;
+        }
+        .time-zone {
+          font-size: 32px;
+          line-height: 28px;
+        }
+      }
+      .location {
+        font-size: 18px;
+        line-height: 28px;
+        letter-spacing: 3.6px;
+      }
+    }
+    .main-footer {
+      height: 440px;
+
+      .footer-line {
+        display: grid;
+        // grid-template-columns: 1fr 1fr;
+        padding-bottom: 14px;
+
+        .footer-title {
+          font-size: 13px;
+          line-height: 28px;
+          letter-spacing: 2.6px;
+        }
+        .footer-value {
+          font-size: 40px;
+          line-height: 48px;
+        }
+      }
     }
   }
 }
