@@ -7,6 +7,7 @@
   height: 39px;
   padding: 3px 3px 4px 15px;
   margin-top: 50px;
+  cursor: pointer;
   background-color: #fff;
   border-radius: 28px;
 
@@ -24,7 +25,18 @@
     img {
       width: 32px;
       height: 32px;
+      transition: transform 0.3s ease;
       transform: rotate(180deg);
+    }
+  }
+
+  &.btn-open {
+    .btn-caret {
+      img {
+        width: 32px;
+        height: 32px;
+        transform: rotate(0);
+      }
     }
   }
 }

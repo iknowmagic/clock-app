@@ -1,9 +1,13 @@
 <template>
   <div
     :class="['btn-more', { 'btn-open': showFooter }]"
-    @click="showFooter = true"
+    @click="showFooter = !showFooter"
   >
-    <div class="btn-text">more</div>
+    <div class="btn-text">
+      <transition mode="out-in" name="fade-in">
+        <div :key="text">{{ text }}</div>
+      </transition>
+    </div>
     <div class="btn-caret">
       <img src="@/assets/images/desktop/icon-arrow-up.svg" alt="caret" />
     </div>
@@ -18,7 +22,10 @@ import { sync } from 'vuex-pathify'
 export default {
   name: 'VButton',
   computed: {
-    showFooter: sync('app/showFooter')
+    showFooter: sync('app/showFooter'),
+    text() {
+      return !this.showFooter ? 'more' : 'less'
+    }
   }
 }
 </script>
