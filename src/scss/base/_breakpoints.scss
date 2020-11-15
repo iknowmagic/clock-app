@@ -1,0 +1,15 @@
+// https://github.com/sass-mq/sass-mq
+
+$mq-responsive: true;
+
+$mq-breakpoints: (
+  mobile: 375px,
+  tablet: 768px,
+  laptop: 1024px,
+  desktop: 1440px,
+  hd: 2560px
+) !default;
+
+// $mq-show-breakpoints: (mobile, tablet, desktop);
+
+@import '~sass-mq';
