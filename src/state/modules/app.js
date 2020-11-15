@@ -3,11 +3,7 @@
 import { make } from 'vuex-pathify'
 
 export const state = {
-  lightMode: true,
-  pageLoaded: false,
-  processedCountries: {},
-  countrySearch: undefined,
-  selectedRegion: undefined
+  showFooter: false
 }
 
 export const getters = {

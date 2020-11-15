@@ -1,0 +1,66 @@
+.main {
+  padding: 30px 26px 40px;
+  color: #fff;
+  text-shadow: 1px 1px 5px rgba(black, 0.3);
+  // background-image: linear-gradient(rgba(#818181, 0.9), rgba(#818181, 0.8));
+  background-image: linear-gradient(rgba(#818181, 0.9), rgba(#818181, 0)),
+    url('~@/assets/images/mobile/bg-image-daytime.jpg');
+  background-repeat: no-repeat;
+
+  .main-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    font-size: 12px;
+    line-height: 22px;
+
+    .quote {
+      .quote-text {
+        margin-bottom: 8px;
+      }
+
+      .quote-author {
+        font-weight: 700;
+      }
+    }
+  }
+  .main-body {
+    margin-top: 230px;
+    .greeting {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+
+      .greeting-text {
+        font-size: 15px;
+        line-height: 25px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+      }
+    }
+    .time {
+      display: grid;
+      grid-template-columns: 1fr 75px;
+      align-items: end;
+      margin-top: 4px;
+
+      .time-display {
+        font-size: 100px;
+        font-weight: 700;
+        line-height: 100px;
+        letter-spacing: -2.5px;
+      }
+      .time-zone {
+        font-size: 15px;
+        font-weight: 300;
+        line-height: 28px;
+      }
+    }
+    .location {
+      margin-top: 20px;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 28px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+  }
+}
