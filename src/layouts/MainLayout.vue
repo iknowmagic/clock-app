@@ -47,6 +47,7 @@
           <div class="footer-title">Week number</div>
           <div class="footer-value">42</div>
         </div>
+        <div class="divider"></div>
       </div>
     </transition>
   </div>
