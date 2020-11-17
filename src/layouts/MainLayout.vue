@@ -1,16 +1,34 @@
 <template>
   <div :class="['main', 'home', { 'main-open': showFooter }]">
-    <transition mode="out-in" name="fade-in">
+    <transition mode="out-in" name="">
       <div v-if="!showFooter" class="main-header">
         <div class="quote">
           <div class="quote-text">
-            “The science of operations, as derived from mathematics more
-            especially, is a science of itself, and has its own abstract truth
-            and value.”
+            <template v-if="quoteLoaded">"{{ quote.quote[0] }}"</template>
+            <div v-if="!quoteLoaded" class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
           </div>
-          <div class="quote-author">Ada Lovelace</div>
+          <div class="quote-author">
+            <template v-if="quoteLoaded">
+              {{ quote.author }}
+            </template>
+            <content-loader
+              v-if="!quoteLoaded"
+              :width="400"
+              :height="6"
+              :speed="1"
+              primary-color="#f3f3f3"
+              secondary-color="#ecebeb"
+            >
+              <rect x="5" y="0" rx="3" ry="3" width="100" height="6" />
+            </content-loader>
+          </div>
         </div>
-        <div class="quote-refresh">
+        <div class="quote-refresh" @click="getQuote">
           <img src="@/assets/images/desktop/icon-refresh.svg" alt="refresh" />
         </div>
       </div>
@@ -60,13 +78,38 @@ import { get } from 'vuex-pathify'
 
 import vButton from '@/components/vButton'
 
+import axios from 'axios'
+import { ContentLoader } from 'vue-content-loader'
+
 export default {
   name: 'MainLayout',
   components: {
-    vButton
+    vButton,
+
+    ContentLoader
+  },
+  data() {
+    return {
+      loaded: true,
+      quoteLoaded: true,
+      quote: undefined
+    }
   },
   computed: {
     showFooter: get('app/showFooter')
+  },
+  mounted() {
+    this.getQuote()
+  },
+  methods: {
+    async getQuote() {
+      this.quoteLoaded = false
+      const { data } = await axios.get(
+        'https://magic-quotes.herokuapp.com/quote/random'
+      )
+      this.quote = data
+      this.quoteLoaded = true
+    }
   }
 }
 </script>

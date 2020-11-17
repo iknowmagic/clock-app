@@ -26,6 +26,7 @@
     "uniqid": "^5.2.0",
     "vue": "^2.6.12",
     "vue-awesome": "^4.1.0",
+    "vue-content-loader": "^0.2.3",
     "vue-load-image": "^0.1.11",
     "vue-meta": "^2.4.0",
     "vue-mq": "^1.0.1",

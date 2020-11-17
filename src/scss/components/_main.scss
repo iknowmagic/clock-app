@@ -1,5 +1,7 @@
 .main {
   position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
   padding: 30px 0 40px;
   color: #fff;
   text-shadow: 1px 1px 5px rgba(black, 0.3);
@@ -25,6 +27,11 @@
       .quote-author {
         font-weight: 700;
       }
+    }
+    .quote-refresh {
+      margin-top: 4px;
+      margin-left: 10px;
+      cursor: pointer;
     }
   }
   .main-body {
@@ -220,10 +227,8 @@
       padding: 0;
       margin: 0 165px;
 
-      .quote {
-        .quote-refresh {
-          margin-top: 6px;
-        }
+      .quote-refresh {
+        margin-top: 6px;
       }
     }
     .main-body {
