@@ -1,7 +1,5 @@
 .main {
   position: relative;
-  display: grid;
-  grid-template-rows: auto 1fr;
   padding: 30px 0 40px;
   color: #fff;
   text-shadow: 1px 1px 5px rgba(black, 0.3);
@@ -15,9 +13,12 @@
   .main-header {
     display: grid;
     grid-template-columns: 1fr auto;
+    height: 326px;
     padding: 0 26px;
+    overflow: hidden;
     font-size: 12px;
     line-height: 22px;
+    transition: height 0.6s ease;
 
     .quote {
       .quote-text {
@@ -36,7 +37,6 @@
   }
   .main-body {
     padding: 0 26px;
-    margin-top: 230px;
     transition: margin 0.6s ease;
 
     .greeting {
@@ -120,6 +120,9 @@
   }
 
   &.main-open {
+    .main-header {
+      height: 0;
+    }
     .main-body {
       margin-top: 70px;
     }

@@ -1,10 +1,12 @@
 <template>
   <div :class="['main', 'home', { 'main-open': showFooter }]">
-    <transition mode="out-in" name="">
-      <div v-if="!showFooter" class="main-header">
+    <transition mode="out-in" name="fade">
+      <div class="main-header">
         <div class="quote">
           <div class="quote-text">
-            <template v-if="quoteLoaded">"{{ quote.quote[0] }}"</template>
+            <template v-if="quoteLoaded">
+              "{{ quote.quote.join(' ') }}"
+            </template>
             <div v-if="!quoteLoaded" class="lds-ellipsis">
               <div></div>
               <div></div>
@@ -16,16 +18,6 @@
             <template v-if="quoteLoaded">
               {{ quote.author }}
             </template>
-            <content-loader
-              v-if="!quoteLoaded"
-              :width="400"
-              :height="6"
-              :speed="1"
-              primary-color="#f3f3f3"
-              secondary-color="#ecebeb"
-            >
-              <rect x="5" y="0" rx="3" ry="3" width="100" height="6" />
-            </content-loader>
           </div>
         </div>
         <div class="quote-refresh" @click="getQuote">
@@ -76,6 +68,8 @@
 
 import { get } from 'vuex-pathify'
 
+import moment from 'moment'
+
 import vButton from '@/components/vButton'
 
 import axios from 'axios'
@@ -92,16 +86,31 @@ export default {
     return {
       loaded: true,
       quoteLoaded: true,
-      quote: undefined
+      quote: undefined,
+      timeObj: {}
     }
   },
   computed: {
     showFooter: get('app/showFooter')
   },
   mounted() {
+    this.getTime()
     this.getQuote()
   },
   methods: {
+    async getTime() {
+      const { data: geoIP } = await axios.get(`https://freegeoip.app/json/`)
+      const { data: timezone } = await axios.get(
+        `http://worldtimeapi.org/api/timezone/${geoIP.time_zone}`
+      )
+      this.timeObj = {
+        day_of_year: timezone.day_of_year,
+        day_of_week: timezone.day_of_week,
+        timezone: timezone.timezone,
+        week_number: timezone.week_number,
+        datetime: timezone.datetime
+      }
+    },
     async getQuote() {
       this.quoteLoaded = false
       const { data } = await axios.get(
