@@ -25,7 +25,7 @@
     img {
       width: 32px;
       height: 32px;
-      transition: transform 0.3s ease;
+      transition: opacity 0.3s ease;
       transform: rotate(180deg);
     }
   }
@@ -38,10 +38,18 @@
     }
   }
 
+  &:hover {
+    .btn-caret {
+      img {
+        opacity: 0.6;
+      }
+    }
+  }
+
   @include mq($from: tablet) {
     width: 146px;
     height: 56px;
-    padding: 6px 9px 4px 20px;
+    padding: 8px 9px 4px 20px;
     margin-top: 80px;
 
     .btn-text {

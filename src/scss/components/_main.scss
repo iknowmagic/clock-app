@@ -38,6 +38,12 @@
       margin-top: 4px;
       margin-left: 10px;
       cursor: pointer;
+
+      &:hover {
+        svg path {
+          opacity: 1;
+        }
+      }
     }
   }
   .main-body {
@@ -53,18 +59,24 @@
         line-height: 25px;
         text-transform: uppercase;
         letter-spacing: 3px;
+
+        span {
+          display: none;
+        }
       }
     }
     .time {
       display: grid;
-      grid-template-columns: 1fr 75px;
+      grid-template-columns: auto 75px;
       column-gap: 10px;
       align-items: end;
+      justify-content: start;
       margin-top: 8px;
 
       .time-display {
         display: grid;
         grid-template-columns: auto auto auto;
+        justify-content: start;
         font-size: 100px;
         font-weight: 700;
         line-height: 100px;
@@ -143,6 +155,7 @@
       url('~@/assets/images/tablet/bg-image-daytime.jpg');
 
     .main-header {
+      height: 508px;
       padding: 0 131px 0 64px;
       font-size: 18px;
       line-height: 28px;
@@ -158,12 +171,16 @@
     }
     .main-body {
       padding: 0 192px 0 64px;
-      margin-top: 390px;
+
       .greeting {
         .greeting-text {
           font-size: 18px;
           line-height: 28px;
           letter-spacing: 3.6px;
+
+          span {
+            display: inline-block;
+          }
         }
       }
       .time {
@@ -175,6 +192,7 @@
           letter-spacing: -4.375px;
         }
         .time-zone {
+          padding-bottom: 8px;
           font-size: 32px;
           line-height: 28px;
         }
@@ -204,6 +222,7 @@
           font-size: 13px;
           line-height: 28px;
           letter-spacing: 2.6px;
+          white-space: nowrap;
         }
         .footer-value {
           font-size: 40px;
@@ -236,6 +255,7 @@
 
     .main-header {
       width: 573px;
+      height: 359px;
       padding: 0;
       margin: 0 165px;
 
@@ -247,7 +267,7 @@
       display: grid;
       justify-content: space-between;
       padding: 0;
-      margin: 232px 165px 40px;
+      margin: 0 165px 40px;
 
       .greeting {
         grid-column: 1;
@@ -266,6 +286,10 @@
           font-size: 200px;
           line-height: 160px;
           letter-spacing: -5px;
+        }
+        .time-zone {
+          font-size: 40px;
+          line-height: 28px;
         }
       }
       .location {
