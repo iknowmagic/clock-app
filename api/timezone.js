@@ -1,3 +1,5 @@
+import fetch from 'isomorphic-unfetch'
+
 async function getTimezone() {
   return fetch(
     `https://api.ipbase.com/v2/info?apikey=${process.env.IP_BASE_KEY}`
