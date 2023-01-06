@@ -155,7 +155,7 @@ export default {
         var splitAfternoon = 12 // 24hr time to split the afternoon
         var splitEvening = 17 // 24hr time to split the evening
         var currentHour = parseFloat(this.clock.hour)
-        console.log({ currentHour, splitAfternoon, splitEvening })
+        // console.log({ currentHour, splitAfternoon, splitEvening })
         if (currentHour >= splitAfternoon && currentHour < splitEvening) {
           g = 'afternoon'
         } else if (currentHour >= splitEvening) {
@@ -174,21 +174,18 @@ export default {
   mounted() {
     this.getTime()
     this.getQuote()
-    console.log(process.env)
   },
   methods: {
     async getTime() {
       this.timeLoaded = false
-      const { data: tz } = await axios.get(
-        `https://api.ipbase.com/v2/info?apikey=${process.env.VUE_APP_IP_BASE_KEY}`
+      const { data } = await axios.get(
+        `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.VUE_APP_GEO_KEY}`
       )
-      const timezone = tz.data
-      console.log({ timezone })
       this.timeObj = {
-        timezone: timezone.timezone.id,
-        datetime: timezone.timezone.current_time,
-        city: timezone.location.city.name,
-        country: timezone.location.country.alpha2
+        timezone: data.time_zone.name,
+        datetime: data.time_zone.current_time,
+        city: data.city,
+        country: data.country_code2
       }
       this.updateTime()
       this.intervalId = setInterval(this.updateTime, 1000)
