@@ -51,7 +51,7 @@
             <img v-else src="@/assets/images/desktop/icon-sun.svg" alt="sun" />
           </div>
           <div class="greeting-text">
-            Good {{ greetingTime }}, it's currently
+            Good {{ greetingTime }}<span>, it's currently</span>
           </div>
         </div>
         <div v-if="clock" class="time">
