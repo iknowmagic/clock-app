@@ -12,7 +12,7 @@
         <div v-if="quote" class="quote">
           <div class="quote-text">
             <template v-if="quoteLoaded">
-              "{{ quote.quote.join(' ') }}"
+              <div>{{ quote.text }}</div>
             </template>
             <div v-if="!quoteLoaded" class="lds-ellipsis">
               <div></div>
@@ -51,7 +51,7 @@
             <img v-else src="@/assets/images/desktop/icon-sun.svg" alt="sun" />
           </div>
           <div class="greeting-text">
-            Good {{ greetingTime }}<span>, it's currently</span>
+            Good {{ greetingTime }}, it's currently
           </div>
         </div>
         <div v-if="clock" class="time">
@@ -177,27 +177,22 @@ export default {
   methods: {
     async getTime() {
       this.timeLoaded = false
-      const { data: geoIP } = await axios.get(`https://freegeoip.app/json/`)
-      const { data: timezone } = await axios.get(
-        `https://magic-quotes.herokuapp.com/timezone/${geoIP.time_zone}`
-      )
+      const { data: tz } = await axios.get(`/api/timezone`)
+      const timezone = tz.data
+      console.log({ timezone })
       this.timeObj = {
-        day_of_year: timezone.day_of_year,
-        day_of_week: timezone.day_of_week,
-        timezone: timezone.timezone,
-        week_number: timezone.week_number,
-        datetime: timezone.datetime,
-        city: geoIP.city,
-        country: geoIP.country_code
+        timezone: timezone.timezone.id,
+        datetime: timezone.timezone.current_time,
+        city: timezone.location.city.name,
+        country: timezone.location.country.alpha2
       }
+      this.updateTime()
       this.intervalId = setInterval(this.updateTime, 1000)
       this.timeLoaded = true
     },
     async getQuote() {
       this.quoteLoaded = false
-      const { data } = await axios.get(
-        'https://magic-quotes.herokuapp.com/quote/random'
-      )
+      const { data } = await axios.get('/api/quote')
       this.quote = data
       this.quoteLoaded = true
     },
@@ -205,6 +200,9 @@ export default {
       const obj = moment(this.timeObj.datetime)
       obj.add(1, 'seconds')
       this.timeObj.datetime = obj.toISOString(true)
+      this.timeObj.day_of_year = obj.format('DDD')
+      this.timeObj.day_of_week = obj.format('d')
+      this.timeObj.week_number = obj.format('W')
     }
   }
 }

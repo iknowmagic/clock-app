@@ -1,0 +1,11 @@
+async function getTimezone() {
+  return fetch(
+    `https://api.ipbase.com/v2/info?apikey=${process.env.IP_BASE_KEY}`
+  )
+}
+
+export default async function timezone(request, response) {
+  const timezoneResponse = await getTimezone()
+  const timezoneData = await timezoneResponse.json()
+  response.status(200).json(timezoneData)
+}

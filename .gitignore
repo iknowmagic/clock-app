@@ -6,6 +6,7 @@ node_modules
 
 
 # local env files
+.env
 .env.local
 .env.*.local
 
@@ -28,3 +29,4 @@ backstop_data/
 __image_snapshots__
 src/assets/images/design
 src/scss/development
+.vercel

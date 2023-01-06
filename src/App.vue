@@ -9,8 +9,6 @@
 
 import { sync } from 'vuex-pathify'
 
-import MobileMenu from '@/components/MobileMenu'
-
 export default {
   name: 'App',
   page() {
