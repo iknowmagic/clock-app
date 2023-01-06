@@ -179,7 +179,7 @@ export default {
     async getTime() {
       this.timeLoaded = false
       const { data } = await axios.get(
-        `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.VUE_APP_GEO_KEY}`
+        `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.VUE_APP_GEO_IP_KEY}`
       )
       this.timeObj = {
         timezone: data.time_zone.name,
