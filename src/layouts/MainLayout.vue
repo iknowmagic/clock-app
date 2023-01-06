@@ -51,7 +51,8 @@
             <img v-else src="@/assets/images/desktop/icon-sun.svg" alt="sun" />
           </div>
           <div class="greeting-text">
-            Good {{ greetingTime }}<span>, it's currently</span>
+            Good {{ greetingTime }}
+            <span>, it's currently</span>
           </div>
         </div>
         <div v-if="clock" class="time">
@@ -173,11 +174,14 @@ export default {
   mounted() {
     this.getTime()
     this.getQuote()
+    console.log(process.env)
   },
   methods: {
     async getTime() {
       this.timeLoaded = false
-      const { data: tz } = await axios.get(`/api/timezone`)
+      const { data: tz } = await axios.get(
+        `https://api.ipbase.com/v2/info?apikey=${process.env.VUE_APP_IP_BASE_KEY}`
+      )
       const timezone = tz.data
       console.log({ timezone })
       this.timeObj = {
