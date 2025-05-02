@@ -1,0 +1,60 @@
+/* Modern CSS version of _buttons.scss */
+.btn-more {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  width: 115px;
+  height: 39px;
+  padding: 3px 3px 4px 15px;
+  margin-top: 50px;
+  cursor: pointer;
+  background-color: #fff;
+  border-radius: 28px;
+}
+
+.btn-more .btn-text {
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 3.75px;
+  opacity: 0.5;
+}
+
+.btn-more .btn-caret img {
+  width: 32px;
+  height: 32px;
+  transition: opacity 0.3s ease;
+  transform: rotate(180deg);
+}
+
+.btn-more.btn-open .btn-caret img {
+  transform: rotate(0);
+}
+
+.btn-more:hover .btn-caret img {
+  opacity: 0.6;
+}
+
+/* Media query for tablet and above */
+@media (min-width: 768px) {
+  .btn-more {
+    width: 146px;
+    height: 56px;
+    padding: 8px 9px 4px 20px;
+    margin-top: 80px;
+  }
+
+  .btn-more .btn-text {
+    font-size: 16px;
+    line-height: 28px;
+    letter-spacing: 5px;
+  }
+
+  .btn-more .btn-caret img {
+    width: 40px;
+    height: 40px;
+  }
+}
