@@ -1,0 +1,91 @@
+/* Import Tailwind CSS */
+@import 'tailwindcss';
+
+/* Normalize (still useful for baseline consistency) */
+@import './normalize.css';
+
+/* Animations */
+@import './animate.css';
+
+/* Base styles for consistency */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
+
+/* Base variables */
+:root {
+  --animate-duration: 0.2s;
+  --breakpoint-mobile: 375px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-laptop: 1024px;
+  --breakpoint-desktop: 1440px;
+  --breakpoint-hd: 2560px;
+}
+
+/* Basic resets that work with Tailwind */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-width: 375px;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  text-rendering: geometricPrecision;
+}
+
+/* Specific component animations and transitions */
+.animate__rotateIn {
+  animation: rotateIn 0.8s ease-in-out;
+}
+
+@keyframes rotateIn {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loader styles */
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+}
+
+/* Optional: keep specific component styles that are difficult to recreate with Tailwind alone */
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-dual-ring::after {
+  content: ' ';
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid rgb(119, 119, 119);
+  border-color: rgb(119, 119, 119) transparent rgb(119, 119, 119) transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Any remaining custom styles that can't be easily replaced with Tailwind utilities */
