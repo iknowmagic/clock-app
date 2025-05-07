@@ -12,6 +12,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   const { showFooter } = useAppStore()
   const [timeLoaded, setTimeLoaded] = useState(false)
   const [quoteLoaded, setQuoteLoaded] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [quote, setQuote] = useState<{ text: string; author: string } | null>(
     null,
   )
@@ -43,7 +44,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   })
   const [greetingTime, setGreetingTime] = useState<string>('')
   const [intervalId, setIntervalId] = useState<number | null>(null)
-  const [refreshing, setRefreshing] = useState(false)
 
   const updateTime = useCallback(() => {
     if (!timeObj.datetime) return
@@ -93,7 +93,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     setTimeLoaded(false)
     try {
       // In a real app, this would fetch from a timezone API
-      // For now, we'll use the local time
+      // For example: https://api.ipgeolocation.io/ipgeo?apiKey=${API_KEY}
       const date = new Date()
       setTimeObj({
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
