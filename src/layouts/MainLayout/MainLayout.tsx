@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/store/appStore'
-import VButton from '@/components/VButton'
 import type { MainLayoutProps } from './MainLayout.types'
+import { FaAngleDoubleDown, FaAngleDoubleUp } from 'react-icons/fa'
 
-// Import SVG icons directly instead of using FA icons
+// Import SVG icons directly
 import iconMoon from '@/assets/images/desktop/icon-moon.svg'
 import iconSun from '@/assets/images/desktop/icon-sun.svg'
 import iconRefresh from '@/assets/images/desktop/icon-refresh.svg'
@@ -12,7 +12,7 @@ import iconRefresh from '@/assets/images/desktop/icon-refresh.svg'
 export const MainLayout: React.FC<MainLayoutProps> = ({
   children: _children,
 }) => {
-  const { showFooter } = useAppStore()
+  const { showFooter, setShowFooter } = useAppStore()
   const [timeLoaded, setTimeLoaded] = useState(false)
   const [quoteLoaded, setQuoteLoaded] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
@@ -101,7 +101,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       setTimeObj({
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         datetime: date.toISOString(),
-        city: 'New York',
+        city: 'New York', // Make sure city matches timezone
         country: 'US',
         day_of_year: Math.ceil(
           (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) /
@@ -145,6 +145,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     getQuote().then(() => {
       setTimeout(() => setRefreshing(false), 500)
     })
+  }
+
+  const toggleFooter = () => {
+    setShowFooter(!showFooter)
   }
 
   useEffect(() => {
@@ -194,8 +198,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <p className="quote-text">&quot;{quote.text}&quot;</p>
-              <p className="quote-author">{quote.author || 'Unknown'}</p>
+              <div className="flex-1">
+                <p className="quote-text">&quot;{quote.text}&quot;</p>
+                <p className="quote-author">{quote.author || 'Unknown'}</p>
+              </div>
               <img
                 src={iconRefresh}
                 alt="refresh"
@@ -236,7 +242,21 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           In {timeObj.city}, {timeObj.country}
         </div>
 
-        <VButton />
+        {/* Replace VButton with a regular button */}
+        <div
+          data-testid="v-button"
+          className={`btn-more ${showFooter ? 'btn-open' : ''}`}
+          onClick={toggleFooter}
+        >
+          <div className="btn-text">{showFooter ? 'less' : 'more'}</div>
+          <div className="btn-caret">
+            {showFooter ? (
+              <FaAngleDoubleUp size={32} />
+            ) : (
+              <FaAngleDoubleDown size={32} />
+            )}
+          </div>
+        </div>
       </div>
 
       <AnimatePresence>
