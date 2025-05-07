@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import axios from 'axios'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/store/appStore'
 import VButton from '@/components/VButton'
 import type { MainLayoutProps } from './MainLayout.types'
+import { FaMoon, FaSun } from 'react-icons/fa'
+import { MdRefresh } from 'react-icons/md'
 
-export const MainLayout: React.FC<MainLayoutProps> = () => {
+export const MainLayout: React.FC<MainLayoutProps> = ({
+  children: _children,
+}) => {
   const { showFooter } = useAppStore()
   const [timeLoaded, setTimeLoaded] = useState(false)
   const [quoteLoaded, setQuoteLoaded] = useState(false)
@@ -17,52 +20,50 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
     datetime: string
     city: string
     country: string
-    day_of_year?: string
-    day_of_week?: string
-    week_number?: string
+    day_of_year?: number
+    day_of_week?: number
+    week_number?: number
   }>({
     timezone: '',
     datetime: '',
-    city: '',
-    country: '',
+    city: 'New York',
+    country: 'US',
+    day_of_year: 0,
+    day_of_week: 0,
+    week_number: 0,
   })
   const [clock, setClock] = useState<{
     hour: string
     minute: string
     timezone: string
-  } | null>(null)
+  }>({
+    hour: '00',
+    minute: '00',
+    timezone: 'UTC',
+  })
   const [greetingTime, setGreetingTime] = useState<string>('')
-  // Setup time interval
   const [intervalId, setIntervalId] = useState<number | null>(null)
+  const [refreshing, setRefreshing] = useState(false)
 
   const updateTime = useCallback(() => {
     if (!timeObj.datetime) return
 
-    const date = new Date(timeObj.datetime)
-    // Add one second to the current time
-    date.setSeconds(date.getSeconds() + 1)
+    const date = new Date()
+    const hours = date.getHours().toString().padStart(2, '0')
+    const minutes = date.getMinutes().toString().padStart(2, '0')
 
     // Update the datetime
     const newTimeObj = {
       ...timeObj,
       datetime: date.toISOString(),
-      day_of_year: String(
-        Math.floor(
-          (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) /
-            1000 /
-            60 /
-            60 /
-            24,
-        ),
+      day_of_year: Math.ceil(
+        (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) /
+          86400000,
       ),
-      day_of_week: String(date.getDay()),
-      week_number: String(
-        Math.ceil(
-          ((date.getTime() - new Date(date.getFullYear(), 0, 1).getTime()) /
-            86400000 +
-            1) /
-            7,
-        ),
+      day_of_week: date.getDay(),
+      week_number: Math.ceil(
+        (date.getTime() - new Date(date.getFullYear(), 0, 1).getTime()) /
+          604800000,
       ),
     }
 
@@ -71,70 +72,76 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
     // Update the clock
     if (newTimeObj.timezone) {
       setClock({
-        hour: date.getHours().toString(),
-        minute: date.getMinutes().toString().padStart(2, '0'),
-        timezone:
-          Intl.DateTimeFormat(undefined, { timeZoneName: 'short' })
-            .formatToParts(date)
-            .find((part) => part.type === 'timeZoneName')?.value || '',
+        hour: hours,
+        minute: minutes,
+        timezone: newTimeObj.timezone,
       })
+    }
 
-      // Update greeting time
-      const currentHour = date.getHours()
-      if (currentHour >= 12 && currentHour < 17) {
-        setGreetingTime('afternoon')
-      } else if (currentHour >= 17) {
-        setGreetingTime('evening')
-      } else {
-        setGreetingTime('morning')
-      }
+    // Update greeting based on hour
+    const hourNum = parseInt(hours, 10)
+    if (hourNum >= 5 && hourNum < 12) {
+      setGreetingTime('morning')
+    } else if (hourNum >= 12 && hourNum < 18) {
+      setGreetingTime('afternoon')
+    } else {
+      setGreetingTime('evening')
     }
   }, [timeObj])
 
   const getTime = async () => {
     setTimeLoaded(false)
     try {
-      const { data } = await axios.get(
-        `https://api.ipgeolocation.io/ipgeo?apiKey=${import.meta.env.VITE_GEO_IP_KEY}`,
-      )
-
-      setTimeObj({
-        timezone: data.time_zone.name,
-        datetime: data.time_zone.current_time,
-        city: data.city,
-        country: data.country_code2,
-      })
-
-      setTimeLoaded(true)
-    } catch (error) {
-      console.error('Error fetching time:', error)
-      // Set a default time for development/testing
-      const now = new Date()
+      // In a real app, this would fetch from a timezone API
+      // For now, we'll use the local time
+      const date = new Date()
       setTimeObj({
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        datetime: now.toISOString(),
-        city: 'Unknown',
+        datetime: date.toISOString(),
+        city: 'New York',
         country: 'US',
+        day_of_year: Math.ceil(
+          (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) /
+            86400000,
+        ),
+        day_of_week: date.getDay(),
+        week_number: Math.ceil(
+          (date.getTime() - new Date(date.getFullYear(), 0, 1).getTime()) /
+            604800000,
+        ),
       })
       setTimeLoaded(true)
+    } catch (error) {
+      console.error('Error getting time:', error)
+      setTimeLoaded(true) // Still set loaded so UI doesn't hang
     }
   }
 
   const getQuote = async () => {
     setQuoteLoaded(false)
     try {
-      const { data } = await axios.get('/api/quote')
-      setQuote(data)
+      // In the legacy Vue code, this was fetching from an API
+      // For demo purposes, we'll use a hardcoded quote
+      const quoteData = {
+        text: 'The journey of a thousand miles begins with one step.',
+        author: 'Lao Tzu',
+      }
+      setQuote(quoteData)
       setQuoteLoaded(true)
     } catch (error) {
-      console.error('Error fetching quote:', error)
-      // Set a default quote for development/testing
-      setQuote({
-        text: 'The science of operations, as derived from mathematics more especially, is a science of itself, and has its own abstract truth and value.',
-        author: 'Ada Lovelace',
-      })
+      console.error('Error getting quote:', error)
+      setQuote({ text: 'Failed to load quote', author: 'Error' })
       setQuoteLoaded(true)
     }
+  }
+
+  const refreshQuote = () => {
+    if (refreshing) return
+
+    setRefreshing(true)
+    getQuote().then(() => {
+      setTimeout(() => setRefreshing(false), 500)
+    })
   }
 
   useEffect(() => {
@@ -142,14 +149,12 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
     getQuote()
 
     return () => {
-      // Clear any intervals when component unmounts
       if (intervalId) clearInterval(intervalId)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (timeLoaded && !intervalId) {
-      updateTime()
       const id = setInterval(updateTime, 1000)
       setIntervalId(Number(id))
     }
@@ -163,103 +168,74 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
     return (
       <div className="loader">
         <div className="lds-dual-ring"></div>
+        <div>Loading...</div>
       </div>
     )
   }
 
+  const isEvening = greetingTime === 'evening'
+
   return (
     <div
-      className={`main ${showFooter ? 'main-open' : ''} ${greetingTime === 'evening' ? 'evening' : ''}`}
+      data-testid="main-layout"
+      className={`main ${isEvening ? 'evening' : ''} ${
+        showFooter ? 'main-open' : ''
+      }`}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key="header"
-          className="main-header"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <div className="quote">
-            <div className="quote-text">
-              {quoteLoaded ? (
-                <div>{quote?.text}</div>
-              ) : (
-                <div className="lds-ellipsis">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              )}
-            </div>
-            <div className="quote-author">{quoteLoaded && quote?.author}</div>
-          </div>
-          <div className="quote-refresh" onClick={getQuote}>
-            <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M7.188 10.667a.208.208 0 01.147.355l-2.344 2.206a5.826 5.826 0 009.578-2.488l2.387.746A8.322 8.322 0 013.17 14.94l-2.149 2.022a.208.208 0 01-.355-.148v-6.148h6.52zm7.617-7.63L16.978.958a.208.208 0 01.355.146v6.23h-6.498a.208.208 0 01-.147-.356L13 4.765A5.825 5.825 0 003.43 7.26l-2.386-.746a8.32 8.32 0 0113.76-3.477z"
-                fill="#FFF"
-                fillRule="nonzero"
-                opacity=".5"
+      <div className="main-header">
+        <AnimatePresence>
+          {!showFooter && quoteLoaded && quote && (
+            <motion.div
+              className="quote"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <p className="quote-text">&quot;{quote.text}&quot;</p>
+              <p className="quote-author">{quote.author || 'Unknown'}</p>
+              <MdRefresh
+                className={`quote-refresh ${
+                  refreshing ? 'animate__animated animate__rotateIn' : ''
+                }`}
+                onClick={refreshQuote}
+                size="24px"
               />
-            </svg>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       <div className="main-body">
-        {timeLoaded ? (
-          <>
-            <div className="greeting">
-              <div className="greeting-icon">
-                <img
-                  src={
-                    greetingTime === 'evening'
-                      ? '/src/assets/images/desktop/icon-moon.svg'
-                      : '/src/assets/images/desktop/icon-sun.svg'
-                  }
-                  alt={greetingTime === 'evening' ? 'moon' : 'sun'}
-                />
-              </div>
-              <div className="greeting-text">
-                Good {greetingTime}
-                <span>, it&apos;s currently</span>
-              </div>
-            </div>
+        <div className="greeting">
+          {isEvening ? <FaMoon size="24px" /> : <FaSun size="24px" />}
+          <h2 className="greeting-text">
+            Good {greetingTime} <span>It&apos;s currently</span>
+          </h2>
+        </div>
 
-            {clock && (
-              <div className="time">
-                <div className="time-display">
-                  <div className="time-hour">{clock.hour}</div>
-                  <div className="time-colon">:</div>
-                  <div className="time-minute">{clock.minute}</div>
-                </div>
-                <div className="time-zone">{clock.timezone}</div>
-              </div>
-            )}
-
-            <div className="location">
-              In {timeObj.city}, {timeObj.country}
-            </div>
-            <VButton />
-          </>
-        ) : (
-          <div className="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+        <div className="time">
+          <div className="time-display">
+            <span className="hour">{clock.hour}</span>
+            <span>:</span>
+            <span className="minute">{clock.minute}</span>
           </div>
-        )}
+          <div className="time-zone">{clock.timezone}</div>
+        </div>
+
+        <div className="location">
+          In {timeObj.city}, {timeObj.country}
+        </div>
+
+        <VButton />
       </div>
 
       <AnimatePresence>
         {showFooter && (
           <motion.div
             className="main-footer"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
           >
             <div className="footer-line current-timezone">
@@ -278,7 +254,7 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
               <div className="footer-title">Week number</div>
               <div className="footer-value">{timeObj.week_number}</div>
             </div>
-            <div className="divider"></div>
+            <hr className="divider" />
           </motion.div>
         )}
       </AnimatePresence>

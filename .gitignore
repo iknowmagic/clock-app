@@ -490,3 +490,5 @@ amalgamated.txt
 log.txt
 vitest-output.txt
 repomix-output.xml
+.vercel
+new-codebase.xml

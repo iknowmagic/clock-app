@@ -6,7 +6,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate loading time
+    // Simulate initial loading for a smoother experience
     const timer = setTimeout(() => {
       setIsLoading(false)
     }, 1000)
@@ -19,19 +19,18 @@ function App() {
       {isLoading ? (
         <motion.div
           key="loader"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="loader"
         >
           <div className="lds-dual-ring"></div>
+          <div>Initializing...</div>
         </motion.div>
       ) : (
         <motion.div
-          key="app"
+          key="main"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
         >
           <MainLayout />
         </motion.div>

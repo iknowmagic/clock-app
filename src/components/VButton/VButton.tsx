@@ -1,6 +1,7 @@
 import React from 'react'
-import { useAppStore } from '../../store/appStore'
+import { useAppStore } from '@/store/appStore'
 import type { VButtonProps } from './VButton.types'
+import { FaAngleDoubleDown, FaAngleDoubleUp } from 'react-icons/fa'
 
 export const VButton: React.FC<VButtonProps> = () => {
   const { showFooter, setShowFooter } = useAppStore()
@@ -11,15 +12,17 @@ export const VButton: React.FC<VButtonProps> = () => {
 
   return (
     <div
+      data-testid="v-button"
       className={`btn-more ${showFooter ? 'btn-open' : ''}`}
       onClick={handleClick}
-      data-testid="v-button"
     >
-      <div className="btn-text">
-        <div>{!showFooter ? 'more' : 'less'}</div>
-      </div>
+      <div className="btn-text">{showFooter ? 'less' : 'more'}</div>
       <div className="btn-caret">
-        <img src="/src/assets/images/desktop/icon-arrow-up.svg" alt="caret" />
+        {showFooter ? (
+          <FaAngleDoubleUp size={32} />
+        ) : (
+          <FaAngleDoubleDown size={32} />
+        )}
       </div>
     </div>
   )
