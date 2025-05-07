@@ -17,9 +17,9 @@ A modern location-based clock application built with React that greets users bas
 
 ## 📱 Responsive Previews
 
-| Desktop                 | Mobile                 | Mobile (Details Expanded)      |
-| ----------------------- | ---------------------- | ------------------------------ |
-| ![](assets/desktop.png) | ![](assets/mobile.png) | ![](assets/mobile_details.png) |
+| Desktop                        | Mobile                        | Mobile (Details Expanded)             |
+| ------------------------------ | ----------------------------- | ------------------------------------- |
+| ![](public/readme/desktop.png) | ![](public/readme/mobile.png) | ![](public/readme/mobile_details.png) |
 
 ## Quick Start
 
