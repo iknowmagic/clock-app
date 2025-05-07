@@ -5,6 +5,7 @@ import VButton from '@/components/VButton'
 import type { MainLayoutProps } from './MainLayout.types'
 import { FaMoon, FaSun } from 'react-icons/fa'
 import { MdRefresh } from 'react-icons/md'
+import timeService from '@/services/TimeService'
 
 export const MainLayout: React.FC<MainLayoutProps> = ({
   children: _children,
@@ -89,64 +90,33 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     }
   }, [timeObj])
 
-  const getTime = async () => {
-    setTimeLoaded(false)
-    try {
-      // In a real app, this would fetch from a timezone API
-      // For example: https://api.ipgeolocation.io/ipgeo?apiKey=${API_KEY}
-      const date = new Date()
-      setTimeObj({
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        datetime: date.toISOString(),
-        city: 'New York',
-        country: 'US',
-        day_of_year: Math.ceil(
-          (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) /
-            86400000,
-        ),
-        day_of_week: date.getDay(),
-        week_number: Math.ceil(
-          (date.getTime() - new Date(date.getFullYear(), 0, 1).getTime()) /
-            604800000,
-        ),
-      })
-      setTimeLoaded(true)
-    } catch (error) {
-      console.error('Error getting time:', error)
-      setTimeLoaded(true) // Still set loaded so UI doesn't hang
-    }
-  }
-
-  const getQuote = async () => {
-    setQuoteLoaded(false)
-    try {
-      // In the legacy Vue code, this was fetching from an API
-      // For demo purposes, we'll use a hardcoded quote
-      const quoteData = {
-        text: 'The journey of a thousand miles begins with one step.',
-        author: 'Lao Tzu',
-      }
-      setQuote(quoteData)
-      setQuoteLoaded(true)
-    } catch (error) {
-      console.error('Error getting quote:', error)
-      setQuote({ text: 'Failed to load quote', author: 'Error' })
-      setQuoteLoaded(true)
-    }
-  }
-
   const refreshQuote = () => {
     if (refreshing) return
 
     setRefreshing(true)
-    getQuote().then(() => {
+    timeService.getQuote().then((quoteData) => {
+      setQuote(quoteData)
       setTimeout(() => setRefreshing(false), 500)
     })
   }
 
   useEffect(() => {
-    getTime()
-    getQuote()
+    const fetchData = async () => {
+      try {
+        const timeData = await timeService.getTimeData()
+        setTimeObj(timeData)
+        setTimeLoaded(true)
+
+        const quoteData = await timeService.getQuote()
+        setQuote(quoteData)
+        setQuoteLoaded(true)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+        setTimeLoaded(true) // Ensure UI doesn't hang
+      }
+    }
+
+    fetchData()
 
     return () => {
       if (intervalId) clearInterval(intervalId)

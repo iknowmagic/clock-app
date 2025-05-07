@@ -51,6 +51,221 @@ select {
   --breakpoint-hd: 2560px;
 }
 
+/* Enhanced main.css to better match Vue implementation */
+
+.quote {
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+.quote-text {
+  margin-bottom: 8px;
+  font-size: 12px;
+  line-height: 22px;
+}
+
+.quote-author {
+  font-weight: 700;
+}
+
+.quote-refresh {
+  margin-top: 4px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.quote-refresh:hover {
+  opacity: 0.8;
+}
+
+/* Adjust greeting icon styling */
+.greeting {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  align-items: center;
+}
+
+.greeting-text {
+  font-size: 15px;
+  line-height: 25px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
+}
+
+.greeting-text span {
+  display: none;
+}
+
+/* Improve time display styling */
+.time {
+  display: grid;
+  grid-template-columns: auto 75px;
+  column-gap: 10px;
+  align-items: end;
+  justify-content: start;
+  margin-top: 16px;
+}
+
+.time .time-display {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  justify-content: start;
+  font-size: 100px;
+  font-weight: 700;
+  line-height: 100px;
+  letter-spacing: -2.5px;
+}
+
+.time .time-zone {
+  padding-bottom: 6px;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 28px;
+}
+
+.location {
+  margin-top: 17px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 28px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+/* Responsive improvements */
+@media (min-width: 768px) {
+  .quote-text {
+    font-size: 18px;
+    line-height: 28px;
+  }
+
+  .greeting-text {
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: 3.6px;
+  }
+
+  .greeting-text span {
+    display: inline-block;
+  }
+
+  .time .time-display {
+    font-size: 175px;
+    line-height: 150px;
+    letter-spacing: -4.375px;
+  }
+
+  .time .time-zone {
+    padding-bottom: 8px;
+    font-size: 32px;
+    line-height: 28px;
+  }
+
+  .location {
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: 3.6px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .main-header {
+    width: 573px;
+    height: 359px;
+    padding: 0;
+    margin: 0 165px;
+  }
+
+  .main-body {
+    display: grid;
+    justify-content: space-between;
+    padding: 0;
+    margin: 0 165px 40px;
+  }
+
+  .greeting {
+    grid-column: 1;
+  }
+
+  .greeting-text {
+    font-size: 20px;
+    line-height: 28px;
+    letter-spacing: 4px;
+  }
+
+  .time {
+    grid-column: 1;
+    width: 575px;
+    margin-top: 33px;
+  }
+
+  .time .time-display {
+    font-size: 200px;
+    line-height: 160px;
+    letter-spacing: -5px;
+  }
+
+  .time .time-zone {
+    font-size: 40px;
+    line-height: 28px;
+  }
+
+  .location {
+    grid-column: 1;
+    margin-top: 37px;
+    font-size: 24px;
+    line-height: 28px;
+    letter-spacing: 4.8px;
+  }
+
+  .btn-more {
+    grid-column: 2;
+    margin-top: 10px;
+  }
+
+  .footer-line .footer-title {
+    font-size: 15px;
+    line-height: 28px;
+    letter-spacing: 3px;
+  }
+
+  .footer-line .footer-value {
+    font-size: 56px;
+    line-height: 68px;
+  }
+}
+
+/* Ensure proper animation for quote refresh */
+.animate__rotateIn {
+  animation: rotateIn 0.8s ease-in-out;
+}
+
+@keyframes rotateIn {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Background image handling */
+.main {
+  background-position: top center;
+  background-size: cover;
+}
+
+.main.evening {
+  background-position: top center;
+  background-size: cover;
+}
+
+.main.main-open.evening {
+  background-position: top -85px left;
+}
+
 /* Import component styles */
 @import './components/buttons.css';
 @import './components/loaders.css';
