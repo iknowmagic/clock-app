@@ -1,11 +1,8 @@
-/* Import Tailwind CSS */
+/* In main.css */
 @import 'tailwindcss';
-
-/* Normalize (still useful for baseline consistency) */
 @import './normalize.css';
-
-/* Animations */
 @import './animate.css';
+@import './backgrounds.css'; /* Add this line */
 
 /* Base styles for consistency */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');

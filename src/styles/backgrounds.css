@@ -1,0 +1,48 @@
+/* Custom responsive background classes */
+
+/* For mobile devices */
+.bg-daytime {
+  background-image: url('@/assets/images/mobile/bg-image-daytime.jpg');
+}
+
+.bg-evening {
+  background-image: url('@/assets/images/mobile/bg-image-nighttime.jpg');
+}
+
+/* For tablet devices */
+@media (min-width: 768px) {
+  .bg-daytime {
+    background-image: url('@/assets/images/tablet/bg-image-daytime.jpg');
+  }
+
+  .bg-evening {
+    background-image: url('@/assets/images/tablet/bg-image-nighttime.jpg');
+  }
+}
+
+/* For desktop devices */
+@media (min-width: 1024px) {
+  .bg-daytime {
+    background-image: url('@/assets/images/desktop/bg-image-daytime.jpg');
+  }
+
+  .bg-evening {
+    background-image: url('@/assets/images/desktop/bg-image-nighttime.jpg');
+  }
+}
+
+/* Apply an overlay to make text more readable */
+.bg-overlay {
+  position: relative;
+}
+
+.bg-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
+  pointer-events: none;
+}

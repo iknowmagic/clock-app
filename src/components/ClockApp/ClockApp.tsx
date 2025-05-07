@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// CSS classes are used instead of direct imports
+// Remove unused imports
 const ClockApp = () => {
   // State management
   const [timeLoaded, setTimeLoaded] = useState(false)
@@ -48,38 +50,6 @@ const ClockApp = () => {
     }
   }, [timeObj.timezone])
 
-  // Get time data
-  const getTime = useCallback(async () => {
-    try {
-      // In a real app, this would fetch from a timezone API
-      const date = new Date()
-
-      // Get timezone safely
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
-
-      setTimeObj({
-        timezone,
-        datetime: date.toISOString(),
-        city: 'New York', // Match city and timezone consistently
-        country: 'US',
-        day_of_year: Math.ceil(
-          (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) /
-            86400000,
-        ),
-        day_of_week: date.getDay(),
-        week_number: Math.ceil(
-          (date.getTime() - new Date(date.getFullYear(), 0, 1).getTime()) /
-            604800000,
-        ),
-      })
-
-      setTimeLoaded(true)
-    } catch (error) {
-      console.error('Error getting time:', error)
-      setTimeLoaded(true) // Still set loaded so UI doesn't hang
-    }
-  }, [])
-
   // Update time
   const updateTime = useCallback(() => {
     if (!timeObj.datetime) return
@@ -125,6 +95,42 @@ const ClockApp = () => {
     }
   }, [timeObj])
 
+  // Get time data
+  const getTime = useCallback(async () => {
+    try {
+      // In a real app, this would fetch from a timezone API
+      const date = new Date()
+
+      // Using optional chaining to handle potential undefined
+      const timezone =
+        Intl.DateTimeFormat()?.resolvedOptions()?.timeZone || 'UTC'
+
+      setTimeObj({
+        timezone,
+        datetime: date.toISOString(),
+        city: 'New York', // Match city and timezone consistently
+        country: 'US',
+        day_of_year: Math.ceil(
+          (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) /
+            86400000,
+        ),
+        day_of_week: date.getDay(),
+        week_number: Math.ceil(
+          (date.getTime() - new Date(date.getFullYear(), 0, 1).getTime()) /
+            604800000,
+        ),
+      })
+
+      // Update clock immediately
+      updateTimeImmediate()
+
+      setTimeLoaded(true)
+    } catch (error) {
+      console.error('Error getting time:', error)
+      setTimeLoaded(true) // Still set loaded so UI doesn't hang
+    }
+  }, [updateTimeImmediate])
+
   // Get quote data
   const getQuote = async () => {
     setQuoteLoaded(false)
@@ -151,7 +157,7 @@ const ClockApp = () => {
     return () => {
       // Cleanup if needed
     }
-  }, [getTime]) // Added getTime dependency
+  }, [getTime]) // Added getTime to dependencies
 
   // Update time every second
   useEffect(() => {
@@ -159,14 +165,7 @@ const ClockApp = () => {
       const interval = setInterval(updateTime, 1000)
       return () => clearInterval(interval)
     }
-  }, [timeLoaded, updateTime]) // Added updateTime dependency
-
-  // After timeObj is updated and we're loaded, update time immediately
-  useEffect(() => {
-    if (timeLoaded && timeObj.timezone) {
-      updateTimeImmediate()
-    }
-  }, [timeLoaded, timeObj.timezone, updateTimeImmediate])
+  }, [timeLoaded, updateTime]) // Added updateTime to dependencies
 
   // Refresh quote
   const refreshQuote = () => {
@@ -196,13 +195,22 @@ const ClockApp = () => {
 
   const isEvening = greetingTime === 'evening'
 
+  // Create a CSS class for the background based on time of day
+  const backgroundClass = `
+    bg-cover bg-center bg-no-repeat transition-all duration-1000
+    ${isEvening ? 'bg-evening' : 'bg-daytime'}
+  `
+
   return (
     <div
-      className={`min-h-screen transition-all duration-500 ${isEvening ? 'bg-gray-900' : 'bg-blue-100'}`}
+      className={`min-h-screen ${backgroundClass}`}
+      style={
+        {
+          // Additional inline styles if needed
+        }
+      }
     >
-      <div
-        className={`max-w-screen-xl mx-auto px-4 py-8 md:px-8 lg:px-16 ${isEvening ? 'text-white' : 'text-gray-800'}`}
-      >
+      <div className="mx-auto px-4 md:px-8 lg:px-16 py-8 max-w-screen-xl text-white">
         {/* Quote Section */}
         <AnimatePresence>
           {!showFooter && quoteLoaded && quote && (
@@ -214,8 +222,12 @@ const ClockApp = () => {
             >
               <div className="flex justify-between items-start">
                 <div className="max-w-[80%]">
-                  <p className="mb-2 text-lg">&ldquo;{quote.text}&rdquo;</p>
-                  <p className="font-bold">{quote.author || 'Unknown'}</p>
+                  <p className="drop-shadow-md mb-2 text-lg">
+                    &ldquo;{quote.text}&rdquo;
+                  </p>
+                  <p className="drop-shadow-md font-bold">
+                    {quote.author || 'Unknown'}
+                  </p>
                 </div>
                 <button
                   onClick={refreshQuote}
@@ -227,6 +239,7 @@ const ClockApp = () => {
                     viewBox="0 0 18 18"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    className="drop-shadow"
                   >
                     <path
                       d="M7.188 10.667a.208.208 0 01.147.355l-2.344 2.206a5.826 5.826 0 009.578-2.488l2.387.746A8.322 8.322 0 013.17 14.94l-2.149 2.022a.208.208 0 01-.355-.148v-6.148h6.52zm7.617-7.63L16.978.958a.208.208 0 01.355.146v6.23h-6.498a.208.208 0 01-.147-.356L13 4.765A5.825 5.825 0 003.43 7.26l-2.386-.746a8.32 8.32 0 0113.76-3.477z"
@@ -249,7 +262,7 @@ const ClockApp = () => {
                 width="23"
                 height="24"
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6"
+                className="drop-shadow w-6 h-6"
               >
                 <path
                   d="M22.157 17.366a.802.802 0 00-.891-.248 8.463 8.463 0 01-2.866.482c-4.853 0-8.8-3.949-8.8-8.8a8.773 8.773 0 013.856-7.274.801.801 0 00-.334-1.454A7.766 7.766 0 0012 0C5.382 0 0 5.382 0 12s5.382 12 12 12c4.2 0 8.02-2.134 10.218-5.709a.805.805 0 00-.061-.925z"
@@ -262,7 +275,7 @@ const ClockApp = () => {
                 width="24"
                 height="24"
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6"
+                className="drop-shadow w-6 h-6"
               >
                 <path
                   d="M11.78 19.417c.594 0 1.083.449 1.146 1.026l.006.125v1.842a1.152 1.152 0 01-2.296.125l-.007-.125v-1.842c0-.636.516-1.151 1.152-1.151zM6.382 17.18a1.15 1.15 0 01.09 1.527l-.09.1-1.302 1.303a1.152 1.152 0 01-1.718-1.528l.09-.1 1.302-1.302a1.15 1.15 0 011.628 0zm12.427 0l1.303 1.303a1.15 1.15 0 11-1.628 1.627L17.18 18.81a1.15 1.15 0 111.628-1.628zM11.781 5.879a5.908 5.908 0 015.901 5.902 5.908 5.908 0 01-5.901 5.902 5.908 5.908 0 01-5.902-5.902 5.908 5.908 0 015.902-5.902zm10.63 4.75a1.151 1.151 0 110 2.303h-1.843a1.151 1.151 0 110-2.303h1.842zm-19.418 0a1.151 1.151 0 01.126 2.296l-.125.007H1.15a1.151 1.151 0 01-.125-2.296l.125-.007h1.842zm1.985-7.268l.1.09 1.303 1.302a1.151 1.151 0 01-1.528 1.718l-.1-.09L3.45 5.08A1.15 1.15 0 014.978 3.36zm15.133.09c.45.449.45 1.178 0 1.628L18.808 6.38a1.151 1.151 0 11-1.628-1.628l1.303-1.303c.449-.449 1.178-.449 1.628 0zM11.781 0c.636 0 1.151.515 1.151 1.151v1.843a1.152 1.152 0 01-2.303 0V1.15C10.63.515 11.145 0 11.781 0z"
@@ -271,22 +284,22 @@ const ClockApp = () => {
                 />
               </svg>
             )}
-            <h2 className="text-lg uppercase tracking-widest">
+            <h2 className="drop-shadow-md text-white text-lg uppercase tracking-widest">
               Good {greetingTime}{' '}
               <span className="hidden md:inline">It&apos;s currently</span>
             </h2>
           </div>
 
           <div className="flex md:flex-row flex-col md:items-end gap-2 md:gap-6">
-            <div className="font-bold text-[8rem] md:text-[10rem] lg:text-[12rem] leading-none tracking-tighter">
+            <div className="drop-shadow-lg font-bold text-[8rem] text-white md:text-[10rem] lg:text-[12rem] leading-none tracking-tighter">
               {clock.hour}:{clock.minute}
             </div>
-            <div className="mb-2 md:mb-8 text-xl md:text-3xl lg:text-4xl uppercase">
+            <div className="drop-shadow-md mb-2 md:mb-8 text-white text-xl md:text-3xl lg:text-4xl uppercase">
               {timeObj.timezone.replace('_', ' ')}
             </div>
           </div>
 
-          <div className="mt-4 font-bold text-lg md:text-xl uppercase tracking-widest">
+          <div className="drop-shadow-md mt-4 font-bold text-white text-lg md:text-xl uppercase tracking-widest">
             In {timeObj.city}, {timeObj.country}
           </div>
         </div>
@@ -295,7 +308,7 @@ const ClockApp = () => {
         <div className="flex justify-center md:justify-start mt-8">
           <button
             onClick={toggleFooter}
-            className={`flex items-center gap-4 bg-white text-gray-800 rounded-full px-6 py-3 font-semibold uppercase tracking-widest shadow-lg transition-all duration-300 ${showFooter ? 'bg-opacity-90' : 'bg-opacity-80 hover:bg-opacity-100'}`}
+            className="flex items-center gap-4 bg-white/80 hover:bg-white/100 shadow-lg px-6 py-3 rounded-full font-semibold text-gray-800 uppercase tracking-widest transition-all duration-300"
           >
             <span>{showFooter ? 'Less' : 'More'}</span>
             <span
@@ -314,7 +327,7 @@ const ClockApp = () => {
           </button>
         </div>
 
-        {/* Footer Section */}
+        {/* Footer Section - No changes needed as it already has light background */}
         <div className="relative">
           <AnimatePresence mode="wait">
             {showFooter && (
