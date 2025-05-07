@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import MainLayout from '@/layouts/MainLayout'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// Import loader images
+import loaderLight from '@/assets/images/loader-light.gif'
+
 function App() {
   const [isLoading, setIsLoading] = useState(true)
 
@@ -23,7 +26,7 @@ function App() {
           exit={{ opacity: 0 }}
           className="loader"
         >
-          <div className="lds-dual-ring"></div>
+          <img src={loaderLight} alt="Loading..." className="loader-image" />
           <div>Initializing...</div>
         </motion.div>
       ) : (
