@@ -86,3 +86,8 @@ body {
 }
 
 /* Any remaining custom styles that can't be easily replaced with Tailwind utilities */
+.text-shadow-strong {
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 4px 12px rgba(0, 0, 0, 0.5);
+}

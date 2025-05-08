@@ -195,22 +195,18 @@ const ClockApp = () => {
 
   const isEvening = greetingTime === 'evening'
 
-  // Create a CSS class for the background based on time of day
-  const backgroundClass = `
-    bg-cover bg-center bg-no-repeat transition-all duration-1000
-    ${isEvening ? 'bg-evening' : 'bg-daytime'}
-  `
-
   return (
     <div
-      className={`min-h-screen ${backgroundClass}`}
-      style={
-        {
-          // Additional inline styles if needed
-        }
-      }
+      className="bg-cover bg-no-repeat bg-center min-h-screen"
+      style={{
+        // Use direct relative paths instead of @/ alias
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                         url('/src/assets/images/${isEvening ? 'desktop/bg-image-nighttime.jpg' : 'desktop/bg-image-daytime.jpg'}')`,
+        transition: 'background-image 1s ease',
+      }}
     >
-      <div className="mx-auto px-4 md:px-8 lg:px-16 py-8 max-w-screen-xl text-white">
+      {/* Content container */}
+      <div className="relative mx-auto px-4 md:px-8 lg:px-16 py-8 max-w-screen-xl text-white">
         {/* Quote Section */}
         <AnimatePresence>
           {!showFooter && quoteLoaded && quote && (
