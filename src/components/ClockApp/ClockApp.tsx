@@ -432,7 +432,7 @@ const ClockApp = () => {
           </div>
 
           {/* Toggle Button - Absolutely positioned at bottom */}
-          <div className="flex justify-center md:justify-end mt-auto mb-6">
+          <div className="flex justify-center md:justify-end mt-auto mb-12">
             <button
               onClick={toggleFooter}
               className="flex items-center gap-4 bg-white/80 hover:bg-white/100 shadow-lg px-6 py-3 rounded-full font-semibold text-gray-800 uppercase tracking-widest transition-all duration-300"
