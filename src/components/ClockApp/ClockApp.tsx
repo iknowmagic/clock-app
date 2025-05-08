@@ -101,21 +101,54 @@ const ClockApp = () => {
     }
   }, [timeObj])
 
-  // Get time data
+  // Get time data from API
   const getTime = useCallback(async () => {
     try {
-      // In a real app, this would fetch from a timezone API
-      const date = new Date()
+      const response = await fetch('/api/timezone')
 
-      // Using optional chaining to handle potential undefined
-      const timezone =
-        Intl.DateTimeFormat()?.resolvedOptions()?.timeZone || 'UTC'
+      if (!response.ok) {
+        throw new Error('Failed to fetch timezone data')
+      }
 
+      const data = await response.json()
+
+      // Set timezone data from API
       setTimeObj({
-        timezone,
+        timezone:
+          data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+        datetime: data.datetime || new Date().toISOString(),
+        city: data.city || 'Unknown',
+        country: data.country_code || 'Unknown',
+        day_of_year:
+          data.day_of_year ||
+          Math.ceil(
+            (new Date().getTime() -
+              new Date(new Date().getFullYear(), 0, 0).getTime()) /
+              86400000,
+          ),
+        day_of_week: data.day_of_week || new Date().getDay(),
+        week_number:
+          data.week_number ||
+          Math.ceil(
+            (new Date().getTime() -
+              new Date(new Date().getFullYear(), 0, 1).getTime()) /
+              604800000,
+          ),
+      })
+
+      // Update clock immediately
+      updateTimeImmediate()
+      setTimeLoaded(true)
+    } catch (error) {
+      console.error('Error getting time data:', error)
+
+      // Fallback to browser time on error
+      const date = new Date()
+      setTimeObj({
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         datetime: date.toISOString(),
-        city: 'New York', // Match city and timezone consistently
-        country: 'US',
+        city: 'Unknown',
+        country: 'Unknown',
         day_of_year: Math.ceil(
           (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) /
             86400000,
@@ -127,25 +160,22 @@ const ClockApp = () => {
         ),
       })
 
-      // Update clock immediately
       updateTimeImmediate()
-
       setTimeLoaded(true)
-    } catch (error) {
-      console.error('Error getting time:', error)
-      setTimeLoaded(true) // Still set loaded so UI doesn't hang
     }
   }, [updateTimeImmediate])
 
-  // Get quote data
+  // Get quote data from API
   const getQuote = async () => {
     setQuoteLoaded(false)
     try {
-      // Hardcoded quote for demo
-      const quoteData = {
-        text: 'The journey of a thousand miles begins with one step.',
-        author: 'Lao Tzu',
+      const response = await fetch('/api/quote')
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch quote')
       }
+
+      const quoteData = await response.json()
       setQuote(quoteData)
       setQuoteLoaded(true)
     } catch (error) {
