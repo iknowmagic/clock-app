@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-npx vitest run --silent --passWithNoTests
+. "$HOME/.nvm/nvm.sh"  # Load nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+
 npx lint-staged --config ./lint-staged.config.js
+npx vitest run --silent --passWithNoTests

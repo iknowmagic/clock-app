@@ -9,6 +9,37 @@ import bgNighttimeTablet from '@/assets/images/tablet/bg-image-nighttime.jpg'
 import bgDaytimeMobile from '@/assets/images/mobile/bg-image-daytime.jpg'
 import bgNighttimeMobile from '@/assets/images/mobile/bg-image-nighttime.jpg'
 
+interface TimezoneResponse {
+  ip: string
+  continent_code: string
+  continent_name: string
+  country_code2: string
+  country_code3: string
+  country_name: string
+  country_name_official: string
+  country_capital: string
+  state_prov: string
+  district: string
+  city: string
+  zipcode: string
+  latitude: string
+  longitude: string
+  is_eu: boolean
+  country_flag: string
+  country_emoji: string
+  calling_code: string
+  country_tld: string
+  languages: string
+  time_zone: {
+    name: string
+    offset: number
+    current_time: string
+    current_time_unix: number
+    is_dst: boolean
+    dst_savings: number
+  }
+}
+
 const ClockApp = () => {
   // State management
   const [timeLoaded, setTimeLoaded] = useState(false)
@@ -101,21 +132,51 @@ const ClockApp = () => {
     }
   }, [timeObj])
 
-  // Get time data
+  // Get time data from API
   const getTime = useCallback(async () => {
     try {
-      // In a real app, this would fetch from a timezone API
-      const date = new Date()
+      const response = await fetch('/api/timezone')
 
-      // Using optional chaining to handle potential undefined
-      const timezone =
-        Intl.DateTimeFormat()?.resolvedOptions()?.timeZone || 'UTC'
+      if (!response.ok) {
+        throw new Error('Failed to fetch timezone data')
+      }
 
+      const data = (await response.json()) as TimezoneResponse
+
+      // Set timezone data from API with the correct property paths
       setTimeObj({
-        timezone,
+        timezone:
+          data.time_zone?.name ||
+          Intl.DateTimeFormat().resolvedOptions().timeZone,
+        datetime: new Date().toISOString(),
+        city: data.city || 'Unknown',
+        country: data.country_code2 || 'Unknown',
+        day_of_year: Math.ceil(
+          (new Date().getTime() -
+            new Date(new Date().getFullYear(), 0, 0).getTime()) /
+            86400000,
+        ),
+        day_of_week: new Date().getDay(),
+        week_number: Math.ceil(
+          (new Date().getTime() -
+            new Date(new Date().getFullYear(), 0, 1).getTime()) /
+            604800000,
+        ),
+      })
+
+      // Update clock immediately
+      updateTimeImmediate()
+      setTimeLoaded(true)
+    } catch (error) {
+      console.error('Error getting time data:', error)
+
+      // Fallback to browser time on error
+      const date = new Date()
+      setTimeObj({
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         datetime: date.toISOString(),
-        city: 'New York', // Match city and timezone consistently
-        country: 'US',
+        city: 'Unknown',
+        country: 'Unknown',
         day_of_year: Math.ceil(
           (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) /
             86400000,
@@ -127,25 +188,22 @@ const ClockApp = () => {
         ),
       })
 
-      // Update clock immediately
       updateTimeImmediate()
-
       setTimeLoaded(true)
-    } catch (error) {
-      console.error('Error getting time:', error)
-      setTimeLoaded(true) // Still set loaded so UI doesn't hang
     }
   }, [updateTimeImmediate])
 
-  // Get quote data
+  // Get quote data from API
   const getQuote = async () => {
     setQuoteLoaded(false)
     try {
-      // Hardcoded quote for demo
-      const quoteData = {
-        text: 'The journey of a thousand miles begins with one step.',
-        author: 'Lao Tzu',
+      const response = await fetch('/api/quote')
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch quote')
       }
+
+      const quoteData = await response.json()
       setQuote(quoteData)
       setQuoteLoaded(true)
     } catch (error) {
