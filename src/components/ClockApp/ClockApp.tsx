@@ -204,11 +204,38 @@ const ClockApp = () => {
       }
 
       const quoteData = await response.json()
+
+      // Small delay to ensure smooth animation transition
+      await new Promise((resolve) => setTimeout(resolve, 300))
+
       setQuote(quoteData)
       setQuoteLoaded(true)
     } catch (error) {
       console.error('Error getting quote:', error)
-      setQuote({ text: 'Failed to load quote', author: 'Error' })
+
+      // Fallback to a default quote with random selection
+      const fallbackQuotes = [
+        {
+          text: 'The journey of a thousand miles begins with one step.',
+          author: 'Lao Tzu',
+        },
+        {
+          text: 'If you have knowledge, let others light their candles in it.',
+          author: 'Margaret Fuller',
+        },
+        {
+          text: 'There is only one success to be able to spend your life in your own way.',
+          author: 'Christopher Morley',
+        },
+      ]
+
+      const randomQuote =
+        fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)]
+      setQuote(randomQuote)
+
+      // Small delay to ensure smooth animation transition
+      await new Promise((resolve) => setTimeout(resolve, 300))
+
       setQuoteLoaded(true)
     }
   }
@@ -216,12 +243,25 @@ const ClockApp = () => {
   // Initialize and load data
   useEffect(() => {
     getTime()
-    getQuote()
+    // Removed getQuote() from here since we have a separate useEffect for it now
 
     return () => {
       // Cleanup if needed
     }
-  }, [getTime]) // Added getTime to dependencies
+  }, [getTime])
+
+  // Initialize useEffect to improve quote loading
+  useEffect(() => {
+    // When component mounts, show placeholder initially for consistent animation
+    setQuoteLoaded(false)
+
+    // Then load the quote with a small delay to ensure animation plays properly
+    const timer = setTimeout(() => {
+      getQuote()
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   // Update time every second
   useEffect(() => {
@@ -285,19 +325,38 @@ const ClockApp = () => {
     >
       {/* Content container */}
       <div className="relative mx-auto px-4 md:px-8 lg:px-16 py-8 max-w-screen-xl text-white">
-        {/* Quote Section */}
-        <AnimatePresence>
-          {!showFooter && quoteLoaded && quote && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="mb-12 md:mb-20"
-            >
-              <div className="flex justify-between items-start">
+        {/* Quote Section with fixed placeholder to prevent layout shift */}
+        <div className="mb-12 md:mb-20 min-h-[80px] md:min-h-[100px]">
+          <AnimatePresence mode="wait">
+            {!quoteLoaded ? (
+              // Loading placeholder that maintains the same space
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0.4 }}
+                animate={{ opacity: 0.7 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex justify-between items-start"
+              >
+                <div className="max-w-[80%]">
+                  <div className="bg-white/20 mb-4 rounded w-3/4 h-4"></div>
+                  <div className="bg-white/20 rounded w-1/4 h-4"></div>
+                </div>
+                <div className="bg-white/20 rounded-full w-8 h-8"></div>
+              </motion.div>
+            ) : (
+              // Actual quote with smooth fade-in
+              <motion.div
+                key="loaded"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex justify-between items-start"
+              >
                 <div className="max-w-[80%]">
                   <p className="drop-shadow-md mb-2 text-lg">
-                    &ldquo;{quote.text}&rdquo;
+                    &ldquo;{quote.text || 'Loading quote...'}&rdquo;
                   </p>
                   <p className="drop-shadow-md font-bold">
                     {quote.author || 'Unknown'}
@@ -323,10 +382,10 @@ const ClockApp = () => {
                     />
                   </svg>
                 </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Clock Section */}
         <div className="mb-8 md:mb-16">
