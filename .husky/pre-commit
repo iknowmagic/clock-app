@@ -1,10 +1,8 @@
 #!/usr/bin/env sh
 
-# Check if nvm exists and load it
-if [ -s "$HOME/.nvm/nvm.sh" ]; then
-  . "$HOME/.nvm/nvm.sh"  # Load nvm
-  nvm use --lts  # Use LTS version
-fi
+. "$HOME/.nvm/nvm.sh"  # Load nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
 
 npx lint-staged --config ./lint-staged.config.js
 npx vitest run --silent --passWithNoTests

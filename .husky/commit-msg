@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+. "$HOME/.nvm/nvm.sh"  # Load nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
 echo ""
 echo "💡 Remainder. Use the interactive prompt:"
 echo "   👉 npm run commit"
