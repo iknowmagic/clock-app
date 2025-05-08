@@ -1,8 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-// CSS classes are used instead of direct imports
-// Remove unused imports
+// Import background images
+import bgDaytimeDesktop from '@/assets/images/desktop/bg-image-daytime.jpg'
+import bgNighttimeDesktop from '@/assets/images/desktop/bg-image-nighttime.jpg'
+import bgDaytimeTablet from '@/assets/images/tablet/bg-image-daytime.jpg'
+import bgNighttimeTablet from '@/assets/images/tablet/bg-image-nighttime.jpg'
+import bgDaytimeMobile from '@/assets/images/mobile/bg-image-daytime.jpg'
+import bgNighttimeMobile from '@/assets/images/mobile/bg-image-nighttime.jpg'
+
 const ClockApp = () => {
   // State management
   const [timeLoaded, setTimeLoaded] = useState(false)
@@ -195,13 +201,27 @@ const ClockApp = () => {
 
   const isEvening = greetingTime === 'evening'
 
+  // Select background image based on time and screen size
+  // These will be properly processed by Vite
+  const getResponsiveBackground = () => {
+    // Get window width for responsive images
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 768) {
+        return isEvening ? bgNighttimeMobile : bgDaytimeMobile
+      } else if (window.innerWidth < 1024) {
+        return isEvening ? bgNighttimeTablet : bgDaytimeTablet
+      }
+    }
+    return isEvening ? bgNighttimeDesktop : bgDaytimeDesktop
+  }
+
+  const bgImage = getResponsiveBackground()
+
   return (
     <div
       className="bg-cover bg-no-repeat bg-center min-h-screen"
       style={{
-        // Use direct relative paths instead of @/ alias
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-                         url('/src/assets/images/${isEvening ? 'desktop/bg-image-nighttime.jpg' : 'desktop/bg-image-daytime.jpg'}')`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${bgImage})`,
         transition: 'background-image 1s ease',
       }}
     >
