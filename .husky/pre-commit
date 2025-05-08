@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-npx vitest run --silent --passWithNoTests
+# Check if nvm exists and load it
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
+  . "$HOME/.nvm/nvm.sh"  # Load nvm
+  nvm use --lts  # Use LTS version
+fi
+
 npx lint-staged --config ./lint-staged.config.js
+npx vitest run --silent --passWithNoTests
