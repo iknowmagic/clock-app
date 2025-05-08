@@ -9,6 +9,37 @@ import bgNighttimeTablet from '@/assets/images/tablet/bg-image-nighttime.jpg'
 import bgDaytimeMobile from '@/assets/images/mobile/bg-image-daytime.jpg'
 import bgNighttimeMobile from '@/assets/images/mobile/bg-image-nighttime.jpg'
 
+interface TimezoneResponse {
+  ip: string
+  continent_code: string
+  continent_name: string
+  country_code2: string
+  country_code3: string
+  country_name: string
+  country_name_official: string
+  country_capital: string
+  state_prov: string
+  district: string
+  city: string
+  zipcode: string
+  latitude: string
+  longitude: string
+  is_eu: boolean
+  country_flag: string
+  country_emoji: string
+  calling_code: string
+  country_tld: string
+  languages: string
+  time_zone: {
+    name: string
+    offset: number
+    current_time: string
+    current_time_unix: number
+    is_dst: boolean
+    dst_savings: number
+  }
+}
+
 const ClockApp = () => {
   // State management
   const [timeLoaded, setTimeLoaded] = useState(false)
@@ -110,30 +141,27 @@ const ClockApp = () => {
         throw new Error('Failed to fetch timezone data')
       }
 
-      const data = await response.json()
+      const data = (await response.json()) as TimezoneResponse
 
-      // Set timezone data from API
+      // Set timezone data from API with the correct property paths
       setTimeObj({
         timezone:
-          data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-        datetime: data.datetime || new Date().toISOString(),
+          data.time_zone?.name ||
+          Intl.DateTimeFormat().resolvedOptions().timeZone,
+        datetime: new Date().toISOString(),
         city: data.city || 'Unknown',
-        country: data.country_code || 'Unknown',
-        day_of_year:
-          data.day_of_year ||
-          Math.ceil(
-            (new Date().getTime() -
-              new Date(new Date().getFullYear(), 0, 0).getTime()) /
-              86400000,
-          ),
-        day_of_week: data.day_of_week || new Date().getDay(),
-        week_number:
-          data.week_number ||
-          Math.ceil(
-            (new Date().getTime() -
-              new Date(new Date().getFullYear(), 0, 1).getTime()) /
-              604800000,
-          ),
+        country: data.country_code2 || 'Unknown',
+        day_of_year: Math.ceil(
+          (new Date().getTime() -
+            new Date(new Date().getFullYear(), 0, 0).getTime()) /
+            86400000,
+        ),
+        day_of_week: new Date().getDay(),
+        week_number: Math.ceil(
+          (new Date().getTime() -
+            new Date(new Date().getFullYear(), 0, 1).getTime()) /
+            604800000,
+        ),
       })
 
       // Update clock immediately
