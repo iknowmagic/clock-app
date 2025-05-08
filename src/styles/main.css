@@ -1,8 +1,5 @@
-/* In main.css */
 @import 'tailwindcss';
-@import './normalize.css';
-@import './animate.css';
-@import './backgrounds.css'; /* Add this line */
+@import './backgrounds.css';
 
 /* Base styles for consistency */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');

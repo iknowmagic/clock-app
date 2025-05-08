@@ -1,3 +1,1 @@
-export interface ClockAppProps {
-  // define your props here
-}
+export interface ClockAppProps {}
