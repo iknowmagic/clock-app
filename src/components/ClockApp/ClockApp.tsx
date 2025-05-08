@@ -422,7 +422,7 @@ const ClockApp = () => {
                 {clock.hour}:{clock.minute}
               </div>
               <div className="drop-shadow-md mb-2 md:mb-8 text-white text-xl md:text-3xl lg:text-4xl uppercase">
-                {timeObj.timezone.split('/').pop().replace('_', ' ')}
+                {(timeObj.timezone ?? '').split('/').pop()?.replace('_', ' ')}
               </div>
             </div>
 
