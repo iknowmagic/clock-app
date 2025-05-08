@@ -20,7 +20,10 @@ const ClockApp: React.FC<ClockAppProps> = () => {
 
   if (!timeLoaded) {
     return (
-      <div className="fixed inset-0 flex justify-center items-center bg-blue-100 text-gray-800">
+      <div
+        className="fixed inset-0 flex justify-center items-center bg-blue-100 text-gray-800"
+        data-testid="app-loading"
+      >
         <div className="text-center">
           <div className="mx-auto mb-4 border-4 border-gray-800 border-t-transparent rounded-full w-16 h-16 animate-spin"></div>
           <div className="text-lg">Loading your time data...</div>
@@ -39,6 +42,7 @@ const ClockApp: React.FC<ClockAppProps> = () => {
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${bgImage})`,
         transition: 'background-image 1s ease',
       }}
+      data-testid="app-loaded"
     >
       {/* Content container with transitions */}
       <div

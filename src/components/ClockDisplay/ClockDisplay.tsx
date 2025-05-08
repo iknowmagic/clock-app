@@ -45,7 +45,7 @@ export const ClockDisplay: React.FC<ClockDisplayProps> = ({
             />
           </svg>
         )}
-        <h2 className="drop-shadow-md text-white text-lg uppercase tracking-widest">
+        <h2 className="drop-shadow-lg text-white text-lg uppercase tracking-widest">
           Good {greetingTime}{' '}
           <span className="hidden md:inline">It&apos;s currently</span>
         </h2>
