@@ -1,11 +1,8 @@
-/* Import Tailwind CSS */
+/* In main.css */
 @import 'tailwindcss';
-
-/* Normalize (still useful for baseline consistency) */
 @import './normalize.css';
-
-/* Animations */
 @import './animate.css';
+@import './backgrounds.css'; /* Add this line */
 
 /* Base styles for consistency */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
@@ -89,3 +86,8 @@ body {
 }
 
 /* Any remaining custom styles that can't be easily replaced with Tailwind utilities */
+.text-shadow-strong {
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 4px 12px rgba(0, 0, 0, 0.5);
+}
